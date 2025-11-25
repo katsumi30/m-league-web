@@ -28,6 +28,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
+        .animate-fade-in { animation: fadeInUp 0.3s ease-out forwards; opacity: 0; }
     </style>
 </head>
 <body class="text-gray-800 font-sans overflow-hidden h-screen flex">
@@ -37,7 +38,7 @@
             <span class="text-white drop-shadow-md">M.LEAGUE AI</span>
         </div>
         <div class="flex-1 p-4 space-y-3 overflow-y-auto">
-            <div class="text-xs font-semibold text-red-200 border-b border-red-600/30 pb-2">定番の質問</div>
+            <div class="text-xs font-semibold text-red-200 border-b border-red-600/30 pb-2">基本データ</div>
             <button onclick="setQuery('現在のチーム順位を教えて')" class="w-full text-left px-4 py-3 rounded-lg text-sm hover:bg-red-600 transition-colors flex items-center gap-2 bg-red-800/50 border border-red-700/50">
                 <span>🏆</span> チーム順位
             </button>
@@ -45,14 +46,19 @@
                 <span>📅</span> 最新の試合結果
             </button>
             
-            <div class="text-xs font-semibold text-red-200 border-b border-red-600/30 pb-2 mt-4">分析・予想</div>
-            <button onclick="setQuery('佐々木寿人と瑞原明奈の対戦成績は？')" class="w-full text-left px-4 py-3 rounded-lg text-sm hover:bg-red-600 transition-colors flex items-center gap-2 bg-red-800/50 border border-red-700/50">
+            <div class="text-xs font-semibold text-red-200 border-b border-red-600/30 pb-2 mt-4">詳細データ</div>
+            <button onclick="setQuery('伊達朱里紗のスタッツは？')" class="w-full text-left px-4 py-3 rounded-lg text-sm hover:bg-red-600 transition-colors flex items-center gap-2 bg-red-800/50 border border-red-700/50">
+                <span>📊</span> 個人スタッツ
+            </button>
+             <button onclick="setQuery('多井隆晴と鈴木優の対戦成績は？')" class="w-full text-left px-4 py-3 rounded-lg text-sm hover:bg-red-600 transition-colors flex items-center gap-2 bg-red-800/50 border border-red-700/50">
                 <span>⚔️</span> 対戦成績比較
             </button>
-            <button onclick="setQuery('多井隆晴と鈴木優の勝敗予想は？')" class="w-full text-left px-4 py-3 rounded-lg text-sm hover:bg-red-600 transition-colors flex items-center gap-2 bg-red-800/50 border border-red-700/50">
+            
+            <div class="text-xs font-semibold text-red-200 border-b border-red-600/30 pb-2 mt-4">分析・予想</div>
+            <button onclick="setQuery('園田賢、堀慎吾、本田朋広、勝つのは誰？')" class="w-full text-left px-4 py-3 rounded-lg text-sm hover:bg-red-600 transition-colors flex items-center gap-2 bg-red-800/50 border border-red-700/50">
                 <span>🔮</span> 勝敗予想
             </button>
-            <button onclick="setQuery('伊達朱里紗のポイント推移は？')" class="w-full text-left px-4 py-3 rounded-lg text-sm hover:bg-red-600 transition-colors flex items-center gap-2 bg-red-800/50 border border-red-700/50">
+            <button onclick="setQuery('佐々木寿人のポイント推移は？')" class="w-full text-left px-4 py-3 rounded-lg text-sm hover:bg-red-600 transition-colors flex items-center gap-2 bg-red-800/50 border border-red-700/50">
                 <span>📈</span> ポイント推移
             </button>
         </div>
@@ -75,7 +81,7 @@
                         <h2 class="font-bold text-lg mb-2 text-gray-800">MリーグAIへようこそ！🀄</h2>
                         <p class="text-gray-600 leading-relaxed text-sm mb-4">
                             公式データを分析して、順位や個人の成績をお答えします。<br>
-                            勝敗予想や対戦成績の比較も可能です！
+                            以下のボタンから質問を選んでみてください。
                         </p>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -85,7 +91,15 @@
                             <button onclick="setQuery('現在のチーム順位を教えて')" class="text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-200 rounded-xl text-sm text-gray-700 transition-all flex items-center gap-2 group">
                                 <span class="text-lg group-hover:scale-110 transition-transform">🏆</span> チーム順位
                             </button>
-                            <button onclick="setQuery('多井隆晴と鈴木優の勝敗予想は？')" class="text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-200 rounded-xl text-sm text-gray-700 transition-all flex items-center gap-2 group">
+                            
+                            <button onclick="setQuery('伊達朱里紗のスタッツは？')" class="text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-200 rounded-xl text-sm text-gray-700 transition-all flex items-center gap-2 group">
+                                <span class="text-lg group-hover:scale-110 transition-transform">📊</span> 個人スタッツ
+                            </button>
+                            <button onclick="setQuery('多井隆晴と鈴木優の対戦成績は？')" class="text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-200 rounded-xl text-sm text-gray-700 transition-all flex items-center gap-2 group">
+                                <span class="text-lg group-hover:scale-110 transition-transform">⚔️</span> 対戦成績比較
+                            </button>
+                            
+                            <button onclick="setQuery('園田賢、堀慎吾、本田朋広、勝つのは誰？')" class="text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-200 rounded-xl text-sm text-gray-700 transition-all flex items-center gap-2 group">
                                 <span class="text-lg group-hover:scale-110 transition-transform">🔮</span> 勝敗予想
                             </button>
                             <button onclick="setQuery('佐々木寿人のポイント推移は？')" class="text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-200 rounded-xl text-sm text-gray-700 transition-all flex items-center gap-2 group">
@@ -112,17 +126,17 @@
     </main>
 
     <script>
-        // ★ここをRenderのURLのままにしてください
+        // ★重要：ここをあなたのRenderのURLに書き換えてください！
+        // （最後に /chat をつけるのを忘れずに）
         const API_URL = 'https://m-league-api.onrender.com/chat';
 
         function setQuery(text) {
-            // スマホで見やすいように自動送信せず、入力欄に入れるだけにします
-            // (誤タップ防止のため。自動送信したい場合は sendMessage() を呼んでください)
+            // ボタンを押すと入力欄に入れてフォーカス（スマホでの誤タップ防止）
+            // 即送信したい場合は下の sendMessage() のコメントアウトを外してください
             const input = document.getElementById('user-input');
             input.value = text;
             input.focus();
-            // ↓この行のコメントアウトを外すと、タップで即送信になります
-            sendMessage(); 
+            // sendMessage(); 
         }
 
         async function sendMessage() {
@@ -226,7 +240,7 @@
                     <div class="flex gap-4 animate-fade-in-up">
                         <div class="w-10 h-10 bg-red-600 rounded-full flex-shrink-0 flex items-center justify-center text-white shadow-md">!</div>
                         <div class="bg-red-50 border border-red-100 text-red-700 px-6 py-4 rounded-2xl rounded-tl-sm shadow-sm">
-                            通信エラー: サーバーがスリープ中かもしれません。もう一度送信してみてください。
+                            エラーが発生しました: ${e}
                         </div>
                     </div>`);
             }
