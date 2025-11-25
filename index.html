@@ -88,9 +88,8 @@
     </main>
 
     <script>
-        // 接続先URL（※Web公開時はここをRenderのURLに書き換えます）
-        // 現在はローカルテスト用
-        const API_URL = 'https://m-league-api.onrender.com/chat';
+        // ★ここをあなたのRenderのURLのままにしてください★
+        const API_URL ='https://m-league-api.onrender.com/chat'; 
 
         function setQuery(text) {
             document.getElementById('user-input').value = text;
@@ -100,23 +99,23 @@
         async function sendMessage() {
             const input = document.getElementById('user-input');
             const area = document.getElementById('messages-area');
-            const container = document.getElementById('chat-container');
             const text = input.value.trim();
             if (!text) return;
 
-            // ユーザーの投稿：Mリーグレッドの吹き出し
-            area.innerHTML += `
+            // 修正1: innerHTML += を insertAdjacentHTML に変更（ここが重要！）
+            area.insertAdjacentHTML('beforeend', `
                 <div class="flex justify-end animate-fade-in-up">
                     <div class="bg-gradient-to-br from-red-500 to-red-600 text-white px-6 py-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-md font-medium text-[15px]">
                         ${text}
                     </div>
-                </div>`;
+                </div>`);
+            
             input.value = '';
             scrollToBottom();
 
-            // ローディング表示
             const loadingId = 'loading-' + Date.now();
-            area.innerHTML += `
+            // 修正2
+            area.insertAdjacentHTML('beforeend', `
                 <div id="${loadingId}" class="flex gap-4 animate-fade-in">
                     <div class="w-10 h-10 bg-emerald-600 rounded-full flex-shrink-0 flex items-center justify-center text-white shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 animate-pulse"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
@@ -128,46 +127,42 @@
                             <div class="typing-dot w-2.5 h-2.5 rounded-full"></div>
                         </div>
                     </div>
-                </div>`;
+                </div>`);
             scrollToBottom();
 
             try {
                 const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({message: text})
+                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message: text})
                 });
                 const data = await res.json();
                 document.getElementById(loadingId).remove();
 
-                // AIの返答：雀卓グリーンの吹き出し
                 let content = `
                     <div class="flex gap-4 animate-fade-in-up">
-                        <div class="w-10 h-10 bg-emerald-600 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold shadow-md">
-                            AI
-                        </div>
+                        <div class="w-10 h-10 bg-emerald-600 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold shadow-md">AI</div>
                         <div class="bg-emerald-50 border border-emerald-100 px-6 py-4 rounded-2xl rounded-tl-sm text-gray-800 max-w-[90%] shadow-sm leading-relaxed">
                             ${data.reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong class="text-red-700">$1</strong>')}
                         </div>
                     </div>`;
-                area.innerHTML += content;
+                
+                // 修正3
+                area.insertAdjacentHTML('beforeend', content);
 
-                // グラフがある場合：赤基調のデザインで表示
                 if (data.graph) {
                     const canvasId = 'chart-' + Date.now();
-                    area.innerHTML += `
+                    // 修正4
+                    area.insertAdjacentHTML('beforeend', `
                         <div class="ml-14 mt-3 animate-fade-in-up">
                             <div class="bg-white border border-red-100 p-4 rounded-2xl shadow-sm w-full max-w-lg relative overflow-hidden">
                                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-300"></div>
                                 <canvas id="${canvasId}"></canvas>
                             </div>
-                        </div>`;
+                        </div>`);
                     
                     setTimeout(() => {
                         const ctx = document.getElementById(canvasId).getContext('2d');
-                        // 赤のグラデーション背景を作成
                         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                        gradient.addColorStop(0, 'rgba(220, 38, 38, 0.2)'); // 赤
+                        gradient.addColorStop(0, 'rgba(220, 38, 38, 0.2)');
                         gradient.addColorStop(1, 'rgba(220, 38, 38, 0.0)');
 
                         new Chart(ctx, {
@@ -177,78 +172,46 @@
                                 datasets: [{
                                     label: data.graph.label,
                                     data: data.graph.data,
-                                    borderColor: '#dc2626', // 線の色（赤）
-                                    backgroundColor: gradient, // 塗りつぶし色
+                                    borderColor: '#dc2626',
+                                    backgroundColor: gradient,
                                     fill: true,
                                     tension: 0.3,
                                     pointBackgroundColor: '#dc2626',
                                     pointBorderColor: '#fff',
                                     pointBorderWidth: 2,
-                                    pointRadius: 4,
-                                    pointHoverRadius: 6
+                                    pointRadius: 4
                                 }]
                             },
                             options: {
                                 responsive: true,
                                 maintainAspectRatio: true,
                                 scales: {
-                                    y: {
-                                        grid: { color: '#f3f4f6' }, // 薄いグレーのグリッド
-                                        ticks: { color: '#4b5563', font: { family: "sans-serif" } }
-                                    },
-                                    x: {
-                                        grid: { display: false },
-                                        ticks: { color: '#4b5563', font: { family: "sans-serif" }, maxRotation: 45, minRotation: 45 }
-                                    }
+                                    y: { grid: { color: '#f3f4f6' }, ticks: { color: '#4b5563' } },
+                                    x: { grid: { display: false }, ticks: { color: '#4b5563', maxRotation: 45, minRotation: 45 } }
                                 },
-                                plugins: {
-                                    legend: {
-                                        labels: { color: '#1f2937', font: { weight: 'bold' } }
-                                    },
-                                    tooltip: {
-                                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                                        titleColor: '#fff',
-                                        bodyColor: '#fff',
-                                        borderColor: '#dc2626',
-                                        borderWidth: 1,
-                                        displayColors: false
-                                    }
-                                }
+                                plugins: { legend: { labels: { color: '#1f2937', font: { weight: 'bold' } } } }
                             }
                         });
                         scrollToBottom();
                     }, 100);
                 }
-
             } catch (e) {
                 document.getElementById(loadingId)?.remove();
-                area.innerHTML += `
+                // 修正5
+                area.insertAdjacentHTML('beforeend', `
                     <div class="flex gap-4 animate-fade-in-up">
                         <div class="w-10 h-10 bg-red-600 rounded-full flex-shrink-0 flex items-center justify-center text-white shadow-md">!</div>
                         <div class="bg-red-50 border border-red-100 text-red-700 px-6 py-4 rounded-2xl rounded-tl-sm shadow-sm">
                             エラーが発生しました: ${e}
                         </div>
-                    </div>`;
+                    </div>`);
             }
             scrollToBottom();
         }
 
         function scrollToBottom() {
-            const container = document.getElementById('chat-container');
-            container.scrollTop = container.scrollHeight;
+            const c = document.getElementById('chat-container');
+            c.scrollTop = c.scrollHeight;
         }
-
-        // 簡易的なアニメーション追加
-        document.head.insertAdjacentHTML('beforeend', `
-            <style>
-                @keyframes fadeInUp {
-                    from { opacity: 0; transform: translateY(10px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
-                .animate-fade-in { animation: fadeInUp 0.3s ease-out forwards; opacity: 0; }
-            </style>
-        `);
-    </script>
-</body>
+    </script></body>
 </html>
